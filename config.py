@@ -16,5 +16,7 @@ TANA_INBOX_NODE_ID = "INBOX"
 TANA_TODAY_NODE_ID = os.getenv("TANA_TODAY_NODE_ID", "INBOX") 
 
 # Supertag to apply to synced tasks
-# This should be the name of the supertag in Tana, e.g., #task
+# SUPERTAG_NAME: Used for clipboard mode (Tana Paste format), e.g., "task" or "task (Tanarian Brain)"
+# SUPERTAG_ID: Used for API mode (required for API sync). Get this by running "Show API schema" on your supertag in Tana
 SUPERTAG_NAME = os.getenv("SUPERTAG_NAME", "task")
+SUPERTAG_ID = os.getenv("SUPERTAG_ID", None)  # Required for API sync

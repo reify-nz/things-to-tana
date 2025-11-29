@@ -29,6 +29,12 @@ class TanaClient:
             "nodes": nodes_payload
         }
 
+        # Debug: Print payload
+        print(f"\n[DEBUG] Sending payload to Tana API:")
+        print(json.dumps(payload, indent=2))
+        print(f"[DEBUG] Target node: {target_node_id}")
+        print(f"[DEBUG] Number of nodes: {len(nodes_payload)}\n")
+
         try:
             response = requests.post(self.endpoint, headers=headers, json=payload)
             response.raise_for_status()

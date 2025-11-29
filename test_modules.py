@@ -8,14 +8,14 @@ import json
 def test_tana_node_api_payload():
     node = TanaNode(name="Task 1")
     node.add_child(TanaNode(name="Subtask 1"))
-    node.add_supertag("task")
-    
+    node.add_supertag("node-id-123")  # Supertags are node IDs in API mode
+
     payload = node.to_api_payload()
-    
+
     assert payload["name"] == "Task 1"
     assert len(payload["children"]) == 1
     assert payload["children"][0]["name"] == "Subtask 1"
-    assert payload["supertags"][0]["name"] == "task"
+    assert payload["supertags"][0]["id"] == "node-id-123"  # Changed from "name" to "id"
 
 # --- History Manager Tests ---
 def test_history_manager(tmp_path):

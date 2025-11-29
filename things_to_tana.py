@@ -2,7 +2,20 @@ import pyperclip
 import sys
 from tana_formatter import TanaNode, to_tana_paste, tana_date
 from things_provider import ThingsProvider
-from config import SUPERTAG_NAME
+from config import SUPERTAG_NAME, TANA_API_TOKEN
+from sync_service import SyncService
+
+
+def is_api_token_valid():
+    """
+    Checks if TANA_API_TOKEN is configured and valid.
+    Returns False if token is None, empty, or the placeholder value.
+    """
+    if not TANA_API_TOKEN:
+        return False
+    if TANA_API_TOKEN == "YOUR_API_TOKEN_HERE":
+        return False
+    return True
 
 
 def get_things_tasks(scope="today"):
@@ -80,36 +93,56 @@ def main():
     if len(sys.argv) > 1:
         scope = sys.argv[1]
 
-    print(f"Fetching '{scope}' tasks from Things 3...")
+    # Check if API token is configured
+    if is_api_token_valid():
+        # API Sync Mode
+        print(f"Using API sync mode (TANA_API_TOKEN configured)")
+        print(f"Syncing '{scope}' tasks from Things 3 to Tana...")
 
-    try:
-        tasks = get_things_tasks(scope)
-    except Exception as e:
-        print(f"Error fetching tasks: {e}")
-        print("Make sure Things 3 is running and you have permissions.")
-        return
+        service = SyncService()
 
-    if not tasks:
-        print("No tasks found.")
-        return
+        if scope == "inbox":
+            service.sync_inbox()
+        elif scope == "today":
+            service.sync_today()
+        elif scope == "all":
+            service.sync_inbox()
+            service.sync_today()
+        else:
+            print(f"Unknown scope: {scope}. Use 'inbox', 'today', or 'all'.")
+    else:
+        # Clipboard Sync Mode
+        print(f"Using clipboard sync mode (no valid TANA_API_TOKEN)")
+        print(f"Fetching '{scope}' tasks from Things 3...")
 
-    tana_nodes = []
-    for task in tasks:
-        # Filter out projects if they appear in the list (things3-api might return them)
-        if task.get('type') == 'project':
-            continue
-        tana_nodes.append(convert_task_to_node(task))
+        try:
+            tasks = get_things_tasks(scope)
+        except Exception as e:
+            print(f"Error fetching tasks: {e}")
+            print("Make sure Things 3 is running and you have permissions.")
+            return
 
-    tana_paste_text = to_tana_paste(tana_nodes)
+        if not tasks:
+            print("No tasks found.")
+            return
 
-    try:
-        pyperclip.copy(tana_paste_text)
-        print("Successfully copied Tana Paste format to clipboard!")
-        print("Go to Tana and paste (Cmd+V).")
-    except Exception as e:
-        print(f"Could not copy to clipboard: {e}")
-        print("Here is the output:\n")
-        print(tana_paste_text)
+        tana_nodes = []
+        for task in tasks:
+            # Filter out projects if they appear in the list (things3-api might return them)
+            if task.get('type') == 'project':
+                continue
+            tana_nodes.append(convert_task_to_node(task))
+
+        tana_paste_text = to_tana_paste(tana_nodes)
+
+        try:
+            pyperclip.copy(tana_paste_text)
+            print("Successfully copied Tana Paste format to clipboard!")
+            print("Go to Tana and paste (Cmd+V).")
+        except Exception as e:
+            print(f"Could not copy to clipboard: {e}")
+            print("Here is the output:\n")
+            print(tana_paste_text)
 
 
 if __name__ == "__main__":

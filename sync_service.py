@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from config import SUPERTAG_NAME, TANA_INBOX_NODE_ID, TANA_TODAY_NODE_ID
+from config import SUPERTAG_ID, TANA_INBOX_NODE_ID, TANA_TODAY_NODE_ID
 from models import TanaNode
 from things_provider import ThingsProvider
 from tana_client import TanaClient
@@ -10,6 +10,16 @@ class SyncService:
         self.things_provider = ThingsProvider()
         self.tana_client = TanaClient()
         self.history_manager = HistoryManager()
+
+        # Warn if SUPERTAG_ID is not configured
+        if not SUPERTAG_ID:
+            print("\n⚠️  Warning: SUPERTAG_ID is not configured.")
+            print("Without a supertag ID, tasks will be created as plain nodes.")
+            print("To add supertags:")
+            print("  1. Open your supertag in Tana (e.g., 'task (Tanarian Brain)')")
+            print("  2. Run command 'Show API schema' on the supertag")
+            print("  3. Copy the node ID and set it as SUPERTAG_ID environment variable")
+            print("  Example: export SUPERTAG_ID='your-node-id-here'\n")
 
     def _convert_task_to_node(self, task: Dict[str, Any]) -> TanaNode:
         """
@@ -23,14 +33,14 @@ class SyncService:
         
         # Create the main node
         node = TanaNode(name=title)
-        
-        # Add configured supertag
-        if SUPERTAG_NAME:
-            node.add_supertag(SUPERTAG_NAME)
-            
-        # Add Things tags as Tana tags
-        for tag in tags:
-            node.add_supertag(tag)
+
+        # Add configured supertag (using node ID for API)
+        if SUPERTAG_ID:
+            node.add_supertag(SUPERTAG_ID)
+
+        # Note: Things tags are skipped in API mode since they require node IDs
+        # To use Things tags, you would need to map each tag name to its Tana node ID
+        # For now, tags are only supported in clipboard mode (things_to_tana.py)
             
         # Add notes as a child node
         if notes:

@@ -30,9 +30,9 @@ class TanaNode:
             payload["description"] = self.description
             
         if self.supertags:
-            # API expects supertags as an array of objects with 'id' or 'name'
-            # We use 'name' here assuming the tag exists or will be created/mapped by name
-            payload["supertags"] = [{"name": tag} for tag in self.supertags]
+            # API expects supertags as an array of objects with 'id'
+            # The tag value should be the node ID of the supertag in Tana
+            payload["supertags"] = [{"id": tag} for tag in self.supertags]
             
         if self.children:
             payload["children"] = [child.to_api_payload() for child in self.children]
