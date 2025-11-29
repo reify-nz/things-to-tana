@@ -207,7 +207,9 @@ All 37 tests should pass.
 ### Important API Notes
 
 - Supertags **must** be referenced by their node ID, not name
-- Get node IDs by running "Show API schema" on the supertag in Tana
+- **How to get supertag node IDs:**
+  - **Method 1:** Open supertag → Configuration panel → "Show API Schema" command → Copy `supertag id`
+  - **Method 2:** Right-click supertag → "Copy link" → Extract node ID from URL after `nodeid=`
 - The API expects JSON payload with `targetNodeId` and `nodes` array
 - Each node can have: `name`, `description`, `supertags`, `children`
 

@@ -15,11 +15,11 @@ class SyncService:
         if not SUPERTAG_ID:
             print("\n⚠️  Warning: SUPERTAG_ID is not configured.")
             print("Without a supertag ID, tasks will be created as plain nodes.")
-            print("To add supertags:")
-            print("  1. Open your supertag in Tana (e.g., 'task (Tanarian Brain)')")
-            print("  2. Run command 'Show API schema' on the supertag")
-            print("  3. Copy the node ID and set it as SUPERTAG_ID environment variable")
-            print("  Example: export SUPERTAG_ID='your-node-id-here'\n")
+            print("To add supertags, get the node ID using one of these methods:")
+            print("  Method 1: Open supertag → Configuration panel → 'Show API Schema' → Copy supertag id")
+            print("  Method 2: Right-click supertag → 'Copy link' → Extract ID after 'nodeid='")
+            print("Then set it as an environment variable:")
+            print("  export SUPERTAG_ID='your-node-id-here'\n")
 
     def _convert_task_to_node(self, task: Dict[str, Any]) -> TanaNode:
         """

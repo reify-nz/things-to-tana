@@ -33,12 +33,19 @@ Get your token from Tana settings.
 
 ### 2. Get Your Supertag ID
 
-To apply a supertag (like "task") to synced items:
+To apply a supertag (like "task") to synced items, you need its node ID:
 
-1. Open Tana
-2. Navigate to your supertag (e.g., "task" or "task (Tanarian Brain)")
-3. Run command: **"Show API schema"**
-4. Copy the `nodeId` from the schema
+**Method 1: Using API Schema (Recommended)**
+1. Open the supertag definition in Tana (e.g., "task" or "task (Tanarian Brain)")
+2. Open its configuration panel
+3. In the title, invoke the command palette and choose **"Show API Schema"**
+4. Copy the displayed `supertag id` (this is your `SUPERTAG_ID`)
+
+**Method 2: Using Copy Link**
+1. Right-click on the supertag in Tana
+2. Choose **"Copy link"**
+3. The link will look like: `https://app.tana.inc?nodeid=ABC123...`
+4. Extract the node ID after `nodeid=` - that's your `SUPERTAG_ID`
 
 ### 3. Set Environment Variables
 
@@ -94,9 +101,14 @@ All environment variables should be exported in your shell (e.g., in `~/.zshrc` 
 
 ### Getting Node IDs
 
-The Tana API requires **node IDs**, not names:
-- For supertags: Run "Show API schema" command on the supertag
-- For nodes: Copy node ID from node menu in Tana
+The Tana API requires **node IDs**, not names. Here's how to get them:
+
+**For Supertags:**
+- **Method 1:** Open supertag → Configuration panel → "Show API Schema" command → Copy `supertag id`
+- **Method 2:** Right-click supertag → "Copy link" → Extract node ID from URL after `nodeid=`
+
+**For Regular Nodes:**
+- Right-click on any node → "Copy link" → Extract node ID from URL after `nodeid=`
 
 ## Development
 
@@ -106,7 +118,7 @@ Want to contribute? See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup
 
 **"Invalid input" error from Tana API:**
 - Make sure `SUPERTAG_ID` is set to a valid node ID, not a name
-- Get the ID by running "Show API schema" on your supertag in Tana
+- Get the ID using "Show API Schema" command or by copying the link and extracting `nodeid=`
 
 **No tasks found:**
 - Ensure Things 3 is running
