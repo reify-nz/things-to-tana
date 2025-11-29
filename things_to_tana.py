@@ -1,20 +1,21 @@
-import things3.things3_api as things
 import pyperclip
 import sys
 from tana_formatter import TanaNode, to_tana_paste, tana_date, tana_tag, tana_field
+from things_provider import ThingsProvider
 
 def get_things_tasks(scope="today"):
     """
     Fetches tasks from Things 3 based on scope.
     Scope can be 'today', 'inbox', or 'all'.
     """
+    provider = ThingsProvider()
     if scope == "today":
-        return things.today()
+        return provider.get_today_tasks()
     elif scope == "inbox":
-        return things.inbox()
+        return provider.get_inbox_tasks()
     else:
-        # For 'all', we might want to be careful. things.todos() returns all.
-        return things.todos()
+        # For 'all', we might want to be careful. get_all_tasks() returns all.
+        return provider.get_all_tasks()
 
 def convert_task_to_node(task) -> TanaNode:
     """

@@ -9,5 +9,13 @@ dependencies = [
     "pyperclip>=1.11.0",
     "pytest>=9.0.1",
     "requests>=2.32.3",
-    "things3-api>=2.7.0",
+    "things.py",
 ]
+
+[tool.pytest.ini_options]
+# Only collect tests from the current directory, not from installed packages
+testpaths = ["."]
+norecursedirs = [".venv", "venv", "__pycache__", ".git", "site-packages"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]

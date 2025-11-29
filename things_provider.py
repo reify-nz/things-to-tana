@@ -1,4 +1,4 @@
-import things3.things3_api as things
+import things
 from typing import List, Dict, Any
 
 class ThingsProvider:
