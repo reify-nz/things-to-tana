@@ -258,9 +258,18 @@ wheels = [
 ]
 
 [[package]]
-name = "tana-sync"
+name = "things-py"
+version = "0.0.15"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/09/bf/dbba75d9a4e38de0d91dff8b1d0aacd754df4080d7c17eae3a1640a4d17f/things.py-0.0.15.tar.gz", hash = "sha256:95ee8602083cf8b9fde59f64486fa6f3d13b1f84bd565c60dd77599c07e7ea16", size = 27476, upload-time = "2023-05-22T19:42:19.238Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b4/a3/97c7e8a2b9ab527cef9c31b74d88d730e4ba539bf6e9743522f9b7584122/things.py-0.0.15-py3-none-any.whl", hash = "sha256:5c75e7f35eb6e9558fa937bfa0b7563f5dc3b726adade836131e572a15c47a0d", size = 26671, upload-time = "2023-05-22T19:42:17.516Z" },
+]
+
+[[package]]
+name = "things-to-tana"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "flask" },
     { name = "pyperclip" },
@@ -276,15 +285,6 @@ requires-dist = [
     { name = "pytest", specifier = ">=9.0.1" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "things-py" },
-]
-
-[[package]]
-name = "things-py"
-version = "0.0.15"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/09/bf/dbba75d9a4e38de0d91dff8b1d0aacd754df4080d7c17eae3a1640a4d17f/things.py-0.0.15.tar.gz", hash = "sha256:95ee8602083cf8b9fde59f64486fa6f3d13b1f84bd565c60dd77599c07e7ea16", size = 27476, upload-time = "2023-05-22T19:42:19.238Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b4/a3/97c7e8a2b9ab527cef9c31b74d88d730e4ba539bf6e9743522f9b7584122/things.py-0.0.15-py3-none-any.whl", hash = "sha256:5c75e7f35eb6e9558fa937bfa0b7563f5dc3b726adade836131e572a15c47a0d", size = 26671, upload-time = "2023-05-22T19:42:17.516Z" },
 ]
 
 [[package]]

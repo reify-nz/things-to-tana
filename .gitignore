@@ -9,3 +9,6 @@ wheels/
 # Virtual environments
 .venv
 history.json
+
+# Environment variables (contains secrets!)
+.env

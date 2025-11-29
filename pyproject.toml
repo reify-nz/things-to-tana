@@ -1,7 +1,11 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "tana-sync"
+name = "things-to-tana"
 version = "0.1.0"
-description = "Add your description here"
+description = "Sync tasks from Things 3 to Tana (clipboard or API)"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -10,6 +14,22 @@ dependencies = [
     "pytest>=9.0.1",
     "requests>=2.32.3",
     "things.py",
+]
+
+[project.scripts]
+things-to-tana = "things_to_tana:main"
+
+[tool.setuptools]
+py-modules = [
+    "things_to_tana",
+    "main",
+    "sync_service",
+    "tana_client",
+    "tana_formatter",
+    "things_provider",
+    "models",
+    "config",
+    "history_manager",
 ]
 
 [tool.pytest.ini_options]
