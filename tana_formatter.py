@@ -1,14 +1,21 @@
 from dataclasses import dataclass, field
-from typing import List, Optional, Union
+from typing import List, Optional
 
 @dataclass
 class TanaNode:
     text: str
     children: List['TanaNode'] = field(default_factory=list)
+    supertags: List[str] = field(default_factory=list)
     checked: Optional[bool] = None  # None = no checkbox, False = [ ], True = [x]
     
     def add_child(self, child: 'TanaNode'):
         self.children.append(child)
+        return self
+    
+    def add_supertag(self, tag: str):
+        """Add a supertag to this node."""
+        if tag not in self.supertags:
+            self.supertags.append(tag)
         return self
 
     def to_string(self, indent_level: int = 0) -> str:
@@ -17,7 +24,25 @@ class TanaNode:
         if self.checked is not None:
             checkbox = "[x] " if self.checked else "[ ] "
         
-        lines = [f"{indent}- {checkbox}{self.text}"]
+        # Format supertags - in Tana paste format, supertags come after checkbox, before text
+        tags = ""
+        for tag in self.supertags:
+            tags += f" {tana_tag(tag)}"
+        
+        # Build the node line: checkbox, then tags, then text
+        # Join parts with proper spacing
+        parts = []
+        if checkbox:
+            parts.append(checkbox.rstrip())  # Remove trailing space, we'll add it back
+        if self.text:
+            parts.append(self.text)
+        if tags:
+            parts.append(tags.strip())  # Remove leading/trailing spaces
+        
+        # Join with single spaces, filtering out empty strings
+        node_line = " ".join(p for p in parts if p)
+        
+        lines = [f"{indent}- {node_line}"]
         for child in self.children:
             lines.append(child.to_string(indent_level + 1))
         return "\n".join(lines)
