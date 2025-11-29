@@ -1,0 +1,4 @@
+things3-api
+pyperclip
+requests
+pytest
