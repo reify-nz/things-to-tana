@@ -31,11 +31,14 @@ cp .env.example .env
 
 # Edit .env with your actual credentials
 # Example contents:
+# DEBUG=true
 # TANA_API_TOKEN=your-token-here
 # SUPERTAG_ID=your-supertag-node-id
 # SUPERTAG_NAME=task
 # TANA_TODAY_NODE_ID=INBOX
 ```
+
+**Tip:** Set `DEBUG=true` in your `.env` file to see detailed API payload information during development.
 
 **Note:** The `.env` file is gitignored to protect your credentials.
 

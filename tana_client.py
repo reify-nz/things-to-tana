@@ -1,7 +1,7 @@
 import requests
 import json
 from typing import List, Dict, Any
-from config import TANA_API_TOKEN, TANA_API_ENDPOINT
+from config import TANA_API_TOKEN, TANA_API_ENDPOINT, DEBUG
 from models import TanaNode
 
 class TanaClient:
@@ -29,11 +29,12 @@ class TanaClient:
             "nodes": nodes_payload
         }
 
-        # Debug: Print payload
-        print(f"\n[DEBUG] Sending payload to Tana API:")
-        print(json.dumps(payload, indent=2))
-        print(f"[DEBUG] Target node: {target_node_id}")
-        print(f"[DEBUG] Number of nodes: {len(nodes_payload)}\n")
+        # Debug: Print payload only if DEBUG=true
+        if DEBUG:
+            print(f"\n[DEBUG] Sending payload to Tana API:")
+            print(json.dumps(payload, indent=2))
+            print(f"[DEBUG] Target node: {target_node_id}")
+            print(f"[DEBUG] Number of nodes: {len(nodes_payload)}\n")
 
         try:
             response = requests.post(self.endpoint, headers=headers, json=payload)

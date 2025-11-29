@@ -96,6 +96,7 @@ ttt all
 | `SUPERTAG_ID` | No | Node ID of supertag to apply (for API sync) |
 | `SUPERTAG_NAME` | No | Name of supertag to apply (for clipboard sync) |
 | `TANA_TODAY_NODE_ID` | No | Target node for "today" tasks (defaults to "INBOX") |
+| `DEBUG` | No | Set to `"true"` to see detailed API payload info (for troubleshooting) |
 
 All environment variables should be exported in your shell (e.g., in `~/.zshrc` or `~/.bashrc`).
 
@@ -119,6 +120,7 @@ Want to contribute? See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup
 **"Invalid input" error from Tana API:**
 - Make sure `SUPERTAG_ID` is set to a valid node ID, not a name
 - Get the ID using "Show API Schema" command or by copying the link and extracting `nodeid=`
+- Enable debug mode to see the exact payload being sent: `export DEBUG=true`
 
 **No tasks found:**
 - Ensure Things 3 is running

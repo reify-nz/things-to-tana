@@ -1,5 +1,8 @@
 import os
 
+# Debug mode - set to "true" to enable debug logging
+DEBUG = os.getenv("DEBUG", "false").lower() == "true"
+
 # Tana API Token
 # You can set this via environment variable or directly here (not recommended for sharing)
 TANA_API_TOKEN = os.getenv("TANA_API_TOKEN", "YOUR_API_TOKEN_HERE")
