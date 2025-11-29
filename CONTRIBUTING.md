@@ -9,7 +9,7 @@ This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/things-to-tana.git
+git clone git@github.com:reify-nz/things-to-tana.git
 cd things-to-tana
 ```
 

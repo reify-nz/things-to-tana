@@ -1,100 +1,121 @@
 # Things to Tana Sync
 
-This project provides tools to sync tasks from [Things 3](https://culturedcode.com/things/) to [Tana](https://tana.inc/).
+Sync tasks from [Things 3](https://culturedcode.com/things/) to [Tana](https://tana.inc/) with a single command.
 
-It supports two modes:
-1. **Clipboard Sync**: Copies tasks to the clipboard in Tana Paste format.
-2. **API Sync**: Sends tasks directly to the Tana Input API with duplicate prevention.
+Two sync modes:
+- **Clipboard Sync** (default): Copies tasks in Tana Paste format - just paste into Tana
+- **API Sync** (optional): Sends tasks directly to Tana with automatic duplicate prevention
 
-## Setup
+## Quick Start
 
-This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
-
-1. **Install Dependencies**:
-   ```bash
-   uv sync
-   ```
-
-2. **Configuration**:
-
-   ### For Clipboard Sync (Default)
-   No configuration needed! Just run the script and paste into Tana.
-
-   Optional environment variables:
-   - `SUPERTAG_NAME`: Name of the supertag to apply (e.g., `"task"` or `"task (Tanarian Brain)"`)
-
-   ### For API Sync (Automated)
-   Required environment variables:
-   - `TANA_API_TOKEN`: Your Tana API token (get from Tana settings)
-   - `SUPERTAG_ID`: Node ID of your supertag in Tana (see below for how to get this)
-
-   Optional environment variables:
-   - `TANA_TODAY_NODE_ID`: Node ID for "Today" tasks (defaults to `"INBOX"`)
-
-   #### Getting Your SUPERTAG_ID
-   The Tana API requires supertag **node IDs**, not names. To get your supertag ID:
-
-   1. Open Tana
-   2. Navigate to your supertag (e.g., "task (Tanarian Brain)")
-   3. Run the command **"Show API schema"** on the supertag
-   4. Copy the `nodeId` from the schema
-   5. Set it as an environment variable:
-      ```bash
-      export SUPERTAG_ID="your-node-id-here"
-      ```
-
-## Usage
-
-### Main Script: `things_to_tana.py`
-
-This script **automatically chooses** between clipboard and API sync:
-- **API Sync**: Used when `TANA_API_TOKEN` is configured
-- **Clipboard Sync**: Used when no token is configured (fallback)
+No installation required! Use [uvx](https://docs.astral.sh/uv/) to run directly from GitHub:
 
 ```bash
-# Sync Today's tasks (default)
-uv run python things_to_tana.py
+# Sync today's tasks to clipboard
+uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana today
 
-# Sync Inbox
-uv run python things_to_tana.py inbox
+# Sync inbox to clipboard
+uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana inbox
 
-# Sync All tasks (inbox + today)
-uv run python things_to_tana.py all
+# Sync all tasks to clipboard
+uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana all
 ```
 
-#### Example: Clipboard Sync
-```bash
-uv run python things_to_tana.py today
-# → Copies to clipboard, paste with Cmd+V in Tana
-```
+After running, paste into Tana with **Cmd+V**.
 
-#### Example: API Sync
+## API Sync Setup (Optional)
+
+For automatic sync to Tana without clipboard:
+
+### 1. Get Your Tana API Token
+
+Get your token from Tana settings.
+
+### 2. Get Your Supertag ID
+
+To apply a supertag (like "task") to synced items:
+
+1. Open Tana
+2. Navigate to your supertag (e.g., "task" or "task (Tanarian Brain)")
+3. Run command: **"Show API schema"**
+4. Copy the `nodeId` from the schema
+
+### 3. Set Environment Variables
+
 ```bash
 export TANA_API_TOKEN="your-token-here"
 export SUPERTAG_ID="your-supertag-node-id"
-uv run python things_to_tana.py today
-# → Sends directly to Tana API
 ```
 
-### Alternative: Direct API Sync with `main.py`
+Add these to your `~/.zshrc` or `~/.bashrc` to make them permanent.
 
-For explicit API sync (always uses API, never clipboard):
+### 4. Run with API Sync
 
 ```bash
-# Sync Today's tasks
-uv run python main.py today
-
-# Sync Inbox
-uv run python main.py inbox
-
-# Sync both
-uv run python main.py all
+# Environment variables must be exported first
+uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana today
 ```
 
-## Testing
-Run the test suite with pytest:
+## Usage Examples
+
 ```bash
-uv run pytest
+# Clipboard sync (default - no setup needed)
+uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana today
+# → Copies to clipboard, paste into Tana
+
+# API sync (export environment variables first)
+export TANA_API_TOKEN="..."
+export SUPERTAG_ID="..."
+uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana inbox
+# → Syncs directly to Tana API
+
+# Create an alias for convenience
+echo 'alias ttt="uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana"' >> ~/.zshrc
+source ~/.zshrc
+
+# Now you can just run:
+ttt today
+ttt inbox
+ttt all
 ```
 
-All 37 tests should pass.
+## Configuration
+
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `TANA_API_TOKEN` | No | Your Tana API token (enables API sync mode) |
+| `SUPERTAG_ID` | No | Node ID of supertag to apply (for API sync) |
+| `SUPERTAG_NAME` | No | Name of supertag to apply (for clipboard sync) |
+| `TANA_TODAY_NODE_ID` | No | Target node for "today" tasks (defaults to "INBOX") |
+
+All environment variables should be exported in your shell (e.g., in `~/.zshrc` or `~/.bashrc`).
+
+### Getting Node IDs
+
+The Tana API requires **node IDs**, not names:
+- For supertags: Run "Show API schema" command on the supertag
+- For nodes: Copy node ID from node menu in Tana
+
+## Development
+
+Want to contribute? See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, architecture, and testing.
+
+## Troubleshooting
+
+**"Invalid input" error from Tana API:**
+- Make sure `SUPERTAG_ID` is set to a valid node ID, not a name
+- Get the ID by running "Show API schema" on your supertag in Tana
+
+**No tasks found:**
+- Ensure Things 3 is running
+- Check that you have tasks in the specified scope (today/inbox)
+
+**Clipboard not working:**
+- The script uses `pyperclip` which requires clipboard access
+- Try pasting with Cmd+V in Tana
+
+## License
+
+MIT
