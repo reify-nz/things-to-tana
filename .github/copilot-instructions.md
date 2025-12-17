@@ -105,7 +105,7 @@ uv run pytest test_tana_formatter.py -v
 
 Required for API sync:
 - `TANA_API_TOKEN`: Bearer token for Tana API
-- `SUPERTAG_ID`: Node ID of supertag (get via "Show API schema" in Tana)
+- `SUPERTAG_ID`: Node ID of supertag (get via "Show API Schema" in Tana)
 
 Optional:
 - `SUPERTAG_NAME`: Supertag name for clipboard mode (default: "task")
