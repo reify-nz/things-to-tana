@@ -109,7 +109,8 @@ def sync_nodes_to_things(
             
             if open_things_url(url):
                 success_count += 1
-                # Small delay to avoid overwhelming Things
+                # Small delay between tasks to avoid overwhelming Things
+                # Skip delay after the last task
                 if i < len(nodes):
                     time.sleep(delay)
             else:
