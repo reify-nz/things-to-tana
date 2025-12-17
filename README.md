@@ -16,6 +16,8 @@ Sync tasks from Tana to Things 3:
 - Automatically creates tasks with notes, tags, and checklist items
 - Schedule tasks for today, tomorrow, or any date
 
+📖 **[See Quick Start Guide for Tana → Things](QUICKSTART_TANA_TO_THINGS.md)**
+
 ## Quick Start
 
 ### Things → Tana
