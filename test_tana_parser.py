@@ -2,11 +2,9 @@
 Tests for Tana Paste Parser
 """
 
-import pytest
 from tana_parser import (
     parse_tana_paste,
     filter_by_supertag,
-    ParsedNode,
     _get_indent_level,
     _parse_line
 )
@@ -102,6 +100,21 @@ def test_parse_with_children():
     """Test parsing a node with child nodes."""
     content = """- Parent task
   - Child task 1
+  - Child task 2"""
+    nodes = parse_tana_paste(content)
+    
+    assert len(nodes) == 1
+    assert nodes[0].text == "Parent task"
+    assert len(nodes[0].children) == 2
+    assert nodes[0].children[0].text == "Child task 1"
+    assert nodes[0].children[1].text == "Child task 2"
+
+
+def test_parse_with_empty_lines_in_children():
+    """Test parsing a node with empty lines between children."""
+    content = """- Parent task
+  - Child task 1
+
   - Child task 2"""
     nodes = parse_tana_paste(content)
     
@@ -259,3 +272,25 @@ def test_parse_whitespace_handling():
     
     assert nodes[0].text == "Task with extra spaces"
     assert "tag" in nodes[0].supertags
+
+
+def test_parse_empty_title_with_checkbox_and_tags():
+    """Test that nodes with only checkbox and supertags get a default title."""
+    content = "- [ ] #things"
+    nodes = parse_tana_paste(content)
+    
+    assert len(nodes) == 1
+    assert nodes[0].text == "Untitled task"
+    assert nodes[0].checked is False
+    assert "things" in nodes[0].supertags
+
+
+def test_parse_empty_title_with_only_tags():
+    """Test that nodes with only supertags get a default title."""
+    content = "- #work #urgent"
+    nodes = parse_tana_paste(content)
+    
+    assert len(nodes) == 1
+    assert nodes[0].text == "Untitled task"
+    assert "work" in nodes[0].supertags
+    assert "urgent" in nodes[0].supertags

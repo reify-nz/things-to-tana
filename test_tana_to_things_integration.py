@@ -2,9 +2,7 @@
 Integration tests for Tana to Things 3 workflow
 """
 
-import pytest
 from tana_parser import parse_tana_paste, filter_by_supertag
-from things_url_generator import generate_add_url
 from tana_to_things import convert_node_to_things_url
 
 

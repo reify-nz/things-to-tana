@@ -6,7 +6,8 @@ Supports parsing checkboxes, supertags, and hierarchical node structures.
 """
 
 import re
-from typing import List, Optional, Tuple
+import copy
+from typing import List, Optional
 from dataclasses import dataclass
 
 
@@ -76,6 +77,12 @@ def _parse_lines(lines: List[str]) -> List[ParsedNode]:
         j = i + 1
         child_lines = []
         while j < len(lines):
+            # Skip empty lines when checking indent
+            if not lines[j].strip():
+                child_lines.append(lines[j])
+                j += 1
+                continue
+            
             child_indent = _get_indent_level(lines[j])
             if child_indent > indent:
                 child_lines.append(lines[j])
@@ -152,6 +159,10 @@ def _parse_line(line: str) -> ParsedNode:
     # Clean up extra whitespace
     text = ' '.join(content.split()).strip()
     
+    # Provide a safe default when a node contains only a checkbox and/or supertags
+    if not text:
+        text = "Untitled task"
+    
     return ParsedNode(text=text, supertags=supertags, checked=checked)
 
 
@@ -172,12 +183,12 @@ def filter_by_supertag(nodes: List[ParsedNode], supertag: str) -> List[ParsedNod
     for node in nodes:
         # Check if this node has the supertag
         if supertag in node.supertags:
-            # Create a copy to avoid modifying original
+            # Create a deep copy to avoid modifying original
             filtered_node = ParsedNode(
                 text=node.text,
-                supertags=node.supertags,
+                supertags=node.supertags.copy(),
                 checked=node.checked,
-                children=node.children.copy() if node.children else []
+                children=copy.deepcopy(node.children) if node.children else []
             )
             filtered.append(filtered_node)
         else:
