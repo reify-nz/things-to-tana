@@ -130,3 +130,37 @@ def test_workflow_mixed_children():
     assert "title=Plan%20party" in url
     assert "notes=" in url  # For non-checkbox children
     assert "checklist-items=" in url  # For checkbox children
+
+
+def test_workflow_empty_title_edge_case():
+    """Test that nodes with only checkbox and supertags work correctly.
+    
+    This is a regression test for a bug where nodes like '- [ ] #things'
+    would result in an empty title after parsing, causing a ValueError
+    when generating the Things URL. The fix adds 'Untitled task' as a
+    default title for such cases.
+    """
+    tana_content = "- [ ] #things"
+    
+    nodes = parse_tana_paste(tana_content)
+    assert len(nodes) == 1
+    
+    # Verify the parser provides a default title
+    assert nodes[0].text == "Untitled task"
+    assert nodes[0].checked is False
+    assert "things" in nodes[0].supertags
+    
+    # Most importantly: verify URL generation doesn't raise ValueError
+    filtered = filter_by_supertag(nodes, "things")
+    url = convert_node_to_things_url(filtered[0])
+    
+    # Should contain the default title
+    assert "title=Untitled%20task" in url
+    
+    # Test another edge case: only supertags, no checkbox
+    tana_content2 = "- #work #urgent"
+    nodes2 = parse_tana_paste(tana_content2)
+    
+    assert nodes2[0].text == "Untitled task"
+    url2 = convert_node_to_things_url(nodes2[0])
+    assert "title=Untitled%20task" in url2
