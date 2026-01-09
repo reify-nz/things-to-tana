@@ -26,10 +26,10 @@ Always use `uv` for running commands:
 uv sync
 
 # Run the main script
-uv run python things_to_tana.py [today|inbox|all]
+uv run things-to-tana [today|inbox|all]
 
 # Run with environment file
-uv run --env-file .env python things_to_tana.py today
+uv run --env-file .env things-to-tana today
 
 # Run tests
 uv run pytest
@@ -57,11 +57,13 @@ uv run pytest test_tana_formatter.py -v
 1. **ThingsProvider** (`things_provider.py`): Abstraction for Things 3 database
    - Methods: `get_inbox_tasks()`, `get_today_tasks()`, `get_all_tasks()`
 
-2. **TanaNode Model** (`models.py`): Dual-purpose data model
-   - Has `to_api_payload()` for API mode
-   - Used with `TanaFormatter.to_tana_paste()` for clipboard mode
+2. **TanaNode (API sync model)** (`models.py`): Data model for Tana Input API sync
+   - Has a `name` field and `to_api_payload()` for API mode
+   - Not used for clipboard / Tana Paste mode
 
-3. **TanaFormatter** (`tana_formatter.py`): Converts to Tana Paste format
+3. **Tana clipboard formatting utilities** (`tana_formatter.py`): Converts nodes to Tana Paste format
+   - Defines a separate `TanaNode` class with a `text` field for clipboard sync
+   - Exposes a module-level `to_tana_paste(nodes)` function that takes a list of these `TanaNode` instances and returns Tana Paste text
    - Formats: tags (`#[[tag]]`), dates (`[[date:YYYY-MM-DD]]`), fields (`name:: value`)
 
 4. **SyncService** (`sync_service.py`): Orchestrates API sync
