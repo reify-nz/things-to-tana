@@ -94,10 +94,9 @@ uv run pytest test_tana_formatter.py -v
 
 ## Important Constraints
 
-1. **One-way sync**: Only sync from Things to Tana, never reverse
-2. **Active tasks only**: Skip completed, canceled, and project containers
-3. **Duplicate prevention**: HistoryManager tracks UUIDs (API mode only)
-4. **Supertag handling**:
+1. **Active tasks only**: Skip completed, canceled, and project containers
+2. **Duplicate prevention**: HistoryManager tracks UUIDs (API mode only)
+3. **Supertag handling**:
    - Clipboard mode: Use tag names (`SUPERTAG_NAME`)
    - API mode: Use node IDs (`SUPERTAG_ID`)
 
