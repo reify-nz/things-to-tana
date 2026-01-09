@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "things-to-tana"
 version = "0.1.0"
-description = "Sync tasks from Things 3 to Tana (clipboard or API)"
+description = "Bi-directional sync: Things 3 ↔ Tana (clipboard or API)"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = [
     "flask>=3.1.0",
     "pyperclip>=1.11.0",
@@ -18,15 +18,19 @@ dependencies = [
 
 [project.scripts]
 things-to-tana = "things_to_tana:main"
+tana-to-things = "tana_to_things:main"
 
 [tool.setuptools]
 py-modules = [
     "things_to_tana",
+    "tana_to_things",
     "main",
     "sync_service",
     "tana_client",
     "tana_formatter",
+    "tana_parser",
     "things_provider",
+    "things_url_generator",
     "models",
     "config",
     "history_manager",
