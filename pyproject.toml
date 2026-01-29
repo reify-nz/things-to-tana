@@ -7,6 +7,7 @@ name = "things-to-tana"
 version = "0.1.0"
 description = "Bi-directional sync: Things 3 ↔ Tana (clipboard or API)"
 readme = "README.md"
+# Minimum Python 3.10 for broader compatibility, though development uses 3.13+ (see .python-version)
 requires-python = ">=3.10"
 dependencies = [
     "flask>=3.1.0",
