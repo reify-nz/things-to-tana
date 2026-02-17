@@ -2,9 +2,10 @@
 
 Sync tasks from [Things 3](https://culturedcode.com/things/) to [Tana](https://tana.inc/) with a single command.
 
-Two sync modes:
+Three sync modes:
 - **Clipboard Sync** (default): Copies tasks in Tana Paste format - just paste into Tana
-- **API Sync** (optional): Sends tasks directly to Tana with automatic duplicate prevention
+- **Local API Sync** (optional): Sends tasks directly via Tana desktop app's local API
+- **Cloud API Sync** (optional): Sends tasks to Tana cloud with automatic duplicate prevention
 
 ## Quick Start
 
@@ -23,9 +24,34 @@ uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana all
 
 After running, paste into Tana with **Cmd+V**.
 
-## API Sync Setup (Optional)
+## Local API Sync Setup (Optional)
 
-For automatic sync to Tana without clipboard:
+Sync directly to Tana desktop app without needing API tokens or clipboard.
+
+### 1. Enable Local API in Tana Desktop
+
+1. Open Tana desktop app
+2. Go to Settings (top right)
+3. Navigate to **Tana Labs**
+4. Enable **"Local API/MCP server (Alpha)"**
+5. Keep Tana desktop app running
+
+### 2. Use Local API Sync
+
+```bash
+# Sync with local API (Tana desktop must be running)
+uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana today --local-api
+
+uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana inbox --local-api
+
+uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana all --local-api
+```
+
+**Note:** The local API runs on `http://localhost:8262` by default. You can customize this with the `TANA_LOCAL_API_URL` environment variable if needed.
+
+## Cloud API Sync Setup (Optional)
+
+For automatic sync to Tana cloud without clipboard:
 
 ### 1. Get Your Tana API Token
 
@@ -56,7 +82,7 @@ export SUPERTAG_ID="your-supertag-node-id"
 
 Add these to your `~/.zshrc` or `~/.bashrc` to make them permanent.
 
-### 4. Run with API Sync
+### 4. Run with Cloud API Sync
 
 ```bash
 # Environment variables must be exported first
@@ -70,20 +96,24 @@ uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana today
 uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana today
 # → Copies to clipboard, paste into Tana
 
-# API sync (export environment variables first)
+# Local API sync (Tana desktop app must be running with Local API enabled)
+uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana inbox --local-api
+# → Syncs directly to Tana desktop via local API
+
+# Cloud API sync (export environment variables first)
 export TANA_API_TOKEN="..."
 export SUPERTAG_ID="..."
 uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana inbox
-# → Syncs directly to Tana API
+# → Syncs directly to Tana cloud API
 
 # Create an alias for convenience
 echo 'alias ttt="uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana"' >> ~/.zshrc
 source ~/.zshrc
 
 # Now you can just run:
-ttt today
-ttt inbox
-ttt all
+ttt today                  # Clipboard
+ttt inbox --local-api      # Local API
+ttt all                    # Cloud API (if TANA_API_TOKEN is set)
 ```
 
 ## Configuration
@@ -92,8 +122,9 @@ ttt all
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `TANA_API_TOKEN` | No | Your Tana API token (enables API sync mode) |
-| `SUPERTAG_ID` | No | Node ID of supertag to apply (for API sync) |
+| `TANA_API_TOKEN` | No | Your Tana cloud API token (enables cloud API sync mode) |
+| `TANA_LOCAL_API_URL` | No | URL for Tana local API (default: `http://localhost:8262`) |
+| `SUPERTAG_ID` | No | Node ID of supertag to apply (for API sync modes) |
 | `SUPERTAG_NAME` | No | Name of supertag to apply (for clipboard sync) |
 | `TANA_TODAY_NODE_ID` | No | Target node for "today" tasks (defaults to "INBOX") |
 | `DEBUG` | No | Set to `"true"` to see detailed API payload info (for troubleshooting) |
@@ -117,7 +148,13 @@ Want to contribute? See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup
 
 ## Troubleshooting
 
-**"Invalid input" error from Tana API:**
+**Local API connection error:**
+- Make sure Tana desktop app is running
+- Check that Local API is enabled: Settings > Tana Labs > "Local API/MCP server (Alpha)"
+- Verify the local API is accessible at `http://localhost:8262/health`
+- If using a custom port, set `TANA_LOCAL_API_URL` environment variable
+
+**"Invalid input" error from Tana Cloud API:**
 - Make sure `SUPERTAG_ID` is set to a valid node ID, not a name
 - Get the ID using "Show API Schema" command or by copying the link and extracting `nodeid=`
 - Enable debug mode to see the exact payload being sent: `export DEBUG=true`

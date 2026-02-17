@@ -1,5 +1,6 @@
 import pyperclip
 import sys
+import argparse
 from tana_formatter import TanaNode, to_tana_paste, tana_date
 from things_provider import ThingsProvider
 from config import SUPERTAG_NAME, TANA_API_TOKEN
@@ -89,14 +90,54 @@ def convert_task_to_node(task) -> TanaNode:
 
 
 def main():
-    scope = "today"
-    if len(sys.argv) > 1:
-        scope = sys.argv[1]
+    parser = argparse.ArgumentParser(
+        description="Sync tasks from Things 3 to Tana",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  things-to-tana today              # Clipboard sync (default)
+  things-to-tana inbox --local-api  # Local API sync
+  things-to-tana all                # Clipboard sync all tasks
+        """
+    )
+    parser.add_argument(
+        "scope",
+        nargs="?",
+        default="today",
+        choices=["inbox", "today", "all"],
+        help="Scope to sync: inbox, today, or all (default: today)"
+    )
+    parser.add_argument(
+        "--local-api",
+        action="store_true",
+        help="Use Tana Local API instead of clipboard or cloud API"
+    )
+    
+    args = parser.parse_args()
+    scope = args.scope
 
-    # Check if API token is configured
-    if is_api_token_valid():
-        # API Sync Mode
-        print(f"Using API sync mode (TANA_API_TOKEN configured)")
+    # Determine sync mode based on flags and configuration
+    if args.local_api:
+        # Local API Sync Mode
+        print(f"Using Local API sync mode (--local-api flag)")
+        print(f"Syncing '{scope}' tasks from Things 3 to Tana via Local API...")
+        
+        from tana_local_client import TanaLocalClient
+        from config import TANA_INBOX_NODE_ID, TANA_TODAY_NODE_ID, SUPERTAG_ID
+        
+        # Use SyncService but with Local API client
+        service = SyncService(use_local_api=True)
+        
+        if scope == "inbox":
+            service.sync_inbox()
+        elif scope == "today":
+            service.sync_today()
+        elif scope == "all":
+            service.sync_inbox()
+            service.sync_today()
+    elif is_api_token_valid():
+        # Cloud API Sync Mode
+        print(f"Using cloud API sync mode (TANA_API_TOKEN configured)")
         print(f"Syncing '{scope}' tasks from Things 3 to Tana...")
 
         service = SyncService()
@@ -108,8 +149,6 @@ def main():
         elif scope == "all":
             service.sync_inbox()
             service.sync_today()
-        else:
-            print(f"Unknown scope: {scope}. Use 'inbox', 'today', or 'all'.")
     else:
         # Clipboard Sync Mode
         print(f"Using clipboard sync mode (no valid TANA_API_TOKEN)")
