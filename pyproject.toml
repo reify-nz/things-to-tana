@@ -25,6 +25,7 @@ py-modules = [
     "main",
     "sync_service",
     "tana_client",
+    "tana_local_client",
     "tana_formatter",
     "things_provider",
     "models",

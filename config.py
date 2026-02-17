@@ -10,6 +10,11 @@ TANA_API_TOKEN = os.getenv("TANA_API_TOKEN", "YOUR_API_TOKEN_HERE")
 # API Endpoint
 TANA_API_ENDPOINT = "https://europe-west1-tagr-prod.cloudfunctions.net/addToNodeV2"
 
+# Local API Configuration
+# The Tana desktop app runs a local API server for MCP protocol integration
+TANA_LOCAL_API_URL = os.getenv("TANA_LOCAL_API_URL", "http://localhost:8262")
+TANA_LOCAL_API_ENDPOINT = f"{TANA_LOCAL_API_URL}/mcp/addToNodeV2"
+
 # Node IDs
 # 'INBOX' is a special ID for the Tana Inbox.
 TANA_INBOX_NODE_ID = "INBOX"

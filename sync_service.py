@@ -6,9 +6,16 @@ from tana_client import TanaClient
 from history_manager import HistoryManager
 
 class SyncService:
-    def __init__(self):
+    def __init__(self, use_local_api: bool = False):
         self.things_provider = ThingsProvider()
-        self.tana_client = TanaClient()
+        
+        # Use local API client if requested
+        if use_local_api:
+            from tana_local_client import TanaLocalClient
+            self.tana_client = TanaLocalClient()
+        else:
+            self.tana_client = TanaClient()
+        
         self.history_manager = HistoryManager()
 
         # Warn if SUPERTAG_ID is not configured
