@@ -79,11 +79,12 @@ def convert_task_to_node(task) -> TanaNode:
                 node.add_child(TanaNode(text=line))
 
     # Add checklist items as children
-    for item in checklist:
-        item_title = item.get('title', '')
-        item_status = item.get('status', '')
-        item_checked = (item_status == 'completed')
-        node.add_child(TanaNode(text=item_title, checked=item_checked))
+    if isinstance(checklist, list):
+        for item in checklist:
+            item_title = item.get('title', '')
+            item_status = item.get('status', '')
+            item_checked = (item_status == 'completed')
+            node.add_child(TanaNode(text=item_title, checked=item_checked))
 
     return node
 
