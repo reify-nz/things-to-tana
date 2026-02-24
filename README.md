@@ -1,13 +1,27 @@
-# Things to Tana Sync
+# Things ↔ Tana Sync
 
-Sync tasks from [Things 3](https://culturedcode.com/things/) to [Tana](https://tana.inc/) with a single command.
+**Bi-directional sync** between [Things 3](https://culturedcode.com/things/) and [Tana](https://tana.inc/) with simple commands.
 
-Three sync modes:
+## Features
+
+### Things → Tana
+Sync tasks from Things 3 to Tana:
 - **Clipboard Sync** (default): Copies tasks in Tana Paste format - just paste into Tana
 - **Local API Sync** (optional): Sends tasks directly via Tana desktop app's local API
 - **Cloud API Sync** (optional): Sends tasks to Tana cloud with automatic duplicate prevention
 
+### Tana → Things (NEW!)
+Sync tasks from Tana to Things 3:
+- Copy tasks from Tana and sync them to Things 3 using the Things URL scheme
+- Filter tasks by supertag (e.g., only sync tasks tagged with `#things`)
+- Automatically creates tasks with notes, tags, and checklist items
+- Schedule tasks for today, tomorrow, or any date
+
+📖 **[See Quick Start Guide for Tana → Things](QUICKSTART_TANA_TO_THINGS.md)**
+
 ## Quick Start
+
+### Things → Tana
 
 No installation required! Use [uvx](https://docs.astral.sh/uv/) to run directly from GitHub:
 
@@ -49,11 +63,103 @@ uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana all --l
 
 **Note:** The local API runs on `http://localhost:8262` by default. You can customize this with the `TANA_LOCAL_API_URL` environment variable if needed.
 
-## Cloud API Sync Setup (Optional)
+### Tana → Things
+
+```bash
+# 1. Copy tasks from Tana (Cmd+C)
+
+# 2. Run sync - syncs all tasks from clipboard
+uvx --from git+https://github.com/reify-nz/things-to-tana tana-to-things
+
+# OR: Only sync tasks tagged with #things
+uvx --from git+https://github.com/reify-nz/things-to-tana tana-to-things --filter things
+
+# OR: Schedule all tasks for today
+uvx --from git+https://github.com/reify-nz/things-to-tana tana-to-things --when today --reveal
+```
+
+Tasks are automatically added to Things 3!
+
+## Tana → Things: Detailed Usage
+
+The reverse workflow is perfect for **capturing tasks in Tana during meetings** and then **managing them in Things 3**.
+
+### How It Works
+
+1. **Capture tasks in Tana** (great for rapid note-taking in meetings)
+2. **Tag tasks** you want to sync with `#things` (optional, but recommended)
+3. **Copy nodes** from Tana (select nodes and Cmd+C)
+4. **Run the sync** command
+5. **Tasks appear in Things 3** automatically via URL scheme
+
+### Command Options
+
+```bash
+# Basic: Sync all tasks from clipboard
+tana-to-things
+
+# Filter: Only sync tasks with specific supertag
+tana-to-things --filter things
+
+# Schedule: Add all tasks to today
+tana-to-things --when today
+
+# Schedule: Add tasks for tomorrow
+tana-to-things --when tomorrow
+
+# Schedule: Add tasks with specific date
+tana-to-things --when 2025-12-31
+
+# Reveal: Show tasks in Things after creation
+tana-to-things --reveal
+
+# Combine options
+tana-to-things --filter things --when today --reveal
+```
+
+### What Gets Synced
+
+**From Tana nodes:**
+- ✅ Task title
+- ✅ Child nodes (non-checkbox) → Notes
+- ✅ Child nodes (checkbox) → Checklist items
+- ✅ Supertags (except `#things` and `#task`) → Tags
+- ✅ Nested structure preserved in notes/checklists
+
+**Example Tana structure:**
+```
+- [ ] Plan team meeting #things #work
+  - Agenda: Q1 review
+  - [ ] Book conference room
+  - [ ] Send calendar invite
+  - Budget: $500
+```
+
+**Results in Things 3:**
+- Title: "Plan team meeting"
+- Tags: work
+- Notes: "Agenda: Q1 review\nBudget: $500"
+- Checklist: "Book conference room", "Send calendar invite"
+
+### Workflow Recommendation
+
+**Tag-based filtering** is recommended for clarity:
+
+1. In Tana, tag tasks you want to transfer with `#things`
+2. Copy your notes/meeting outcomes
+3. Run: `tana-to-things --filter things`
+4. Only tasks with `#things` tag are synced
+
+This way, you can:
+- Keep your meeting notes in Tana
+- Only transfer actionable tasks to Things 3
+- Avoid cluttering Things with non-task items
+
+## Cloud API Sync Setup (Optional - Things → Tana only)
 
 For automatic sync to Tana cloud without clipboard:
 
-### 1. Get Your Tana API Token
+### 1. Get Your Tana Cloud API Token
 
 Get your token from Tana settings.
 
@@ -91,6 +197,8 @@ uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana today
 
 ## Usage Examples
 
+### Things → Tana
+
 ```bash
 # Clipboard sync (default - no setup needed)
 uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana today
@@ -105,15 +213,37 @@ export TANA_API_TOKEN="..."
 export SUPERTAG_ID="..."
 uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana inbox
 # → Syncs directly to Tana cloud API
+```
 
-# Create an alias for convenience
+### Tana → Things
+
+```bash
+# 1. Copy tasks from Tana
+# 2. Run sync
+
+# Basic: Sync all tasks
+uvx --from git+https://github.com/reify-nz/things-to-tana tana-to-things
+
+# With filtering: Only tasks tagged #things
+uvx --from git+https://github.com/reify-nz/things-to-tana tana-to-things --filter things
+
+# With scheduling: Add to Today
+uvx --from git+https://github.com/reify-nz/things-to-tana tana-to-things --when today --reveal
+```
+
+### Create Aliases for Convenience
+
+```bash
+# Add to ~/.zshrc or ~/.bashrc
 echo 'alias ttt="uvx --from git+https://github.com/reify-nz/things-to-tana things-to-tana"' >> ~/.zshrc
+echo 'alias ttt-reverse="uvx --from git+https://github.com/reify-nz/things-to-tana tana-to-things"' >> ~/.zshrc
 source ~/.zshrc
 
-# Now you can just run:
-ttt today                  # Clipboard
-ttt inbox --local-api      # Local API
-ttt all                    # Cloud API (if TANA_API_TOKEN is set)
+# Now you can use short commands:
+ttt today                      # Clipboard (Things → Tana)
+ttt inbox --local-api          # Local API (Things → Tana)
+ttt all                        # Cloud API (Things → Tana, if TANA_API_TOKEN is set)
+ttt-reverse --filter things    # Tana → Things
 ```
 
 ## Configuration
@@ -148,6 +278,8 @@ Want to contribute? See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup
 
 ## Troubleshooting
 
+### Things → Tana
+
 **Local API connection error:**
 - Make sure Tana desktop app is running
 - Check that Local API is enabled: Settings > Tana Labs > "Local API/MCP server (Alpha)"
@@ -166,6 +298,28 @@ Want to contribute? See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup
 **Clipboard not working:**
 - The script uses `pyperclip` which requires clipboard access
 - Try pasting with Cmd+V in Tana
+
+### Tana → Things
+
+**No tasks synced:**
+- Make sure you copied valid Tana Paste content (copy nodes from Tana with Cmd+C)
+- If using `--filter`, ensure tasks have the specified supertag
+- Check that clipboard contains content
+
+**Things doesn't open:**
+- The script only works on macOS (uses the `open` command)
+- Ensure Things 3 is installed
+- If URLs are printed but not opened, copy and paste them manually into a browser
+
+**Tasks not appearing correctly:**
+- Verify the Tana Paste format is correct
+- Child nodes with checkboxes become checklist items
+- Child nodes without checkboxes become notes
+- Supertags (except `#things` and `#task`) become tags
+
+**Permission errors:**
+- macOS may ask for permission to control Things 3
+- Grant the permission when prompted
 
 ## License
 
